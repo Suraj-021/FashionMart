@@ -7,45 +7,43 @@ import authRoutes from "./routes/authRoute.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import cors from "cors";
-import path from "path";
 
-//configure env
+// Configure env
 dotenv.config();
 
-//databse config
+// Database config
 connectDB();
 
-//rest object
+// Create Express app
 const app = express();
 
-// esmodule fix
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-//middelwares
-app.use(cors());
+// Middlewares
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL, // Replace with your frontend URL
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(morgan("dev"));
-// app.use(express.static(path.join(__dirname, "./client/build/public")));
 
-//routes
+// Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
 
-//rest api
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "./client/build/index.html"));
-// });
+// Catch-all route (Optional: Remove if not needed)
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
 
-//PORT
+// PORT
 const PORT = process.env.PORT || 8080;
 
-//run listen
+// Start server
 app.listen(PORT, () => {
   console.log(
-    `Server Running on ${process.env.DEV_MODE} mode on port ${PORT}`.bgCyan
+    `Server Running in ${process.env.DEV_MODE} mode on port ${PORT}`.bgCyan
       .white
   );
 });
